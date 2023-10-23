@@ -550,8 +550,6 @@ module fortiWebTemplate '003-fortiweb.bicep' = if (deployFortiWeb == 'yes') {
     availabilityOptions: availabilityOptions
     deploymentPrefix: deploymentPrefix
     fortinetTags: fortinetTags
-    fortiWebAAdditionalCustomData:fortiWebAAdditionalCustomData
-    fortiWebBAdditionalCustomData:fortiWebBAdditionalCustomData
     fortiWebHaGroupId: fortiWebHaGroupId
     fortiWebImageSKU: fortiWebImageSKU
     fortiWebImageVersion: fortiWebImageVersion
