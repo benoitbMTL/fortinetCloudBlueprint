@@ -404,12 +404,6 @@ param fortiWebImageVersion string = 'latest'
 @maxValue(63)
 param fortiWebHaGroupId int = 1
 
-@description('The ARM template provides a basic configuration. Additional configuration can be added here.')
-param fortiWebAAdditionalCustomData string = ''
-
-@description('The ARM template provides a basic configuration. Additional configuration can be added here.')
-param fortiWebBAdditionalCustomData string = ''
-
 @description('Public IP for the Load Balancer for inbound and outbound data of the FortiWeb VMs')
 @allowed([
   'new'
