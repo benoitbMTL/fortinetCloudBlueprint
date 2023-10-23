@@ -60,7 +60,7 @@ param adminUsername string = 'benoitb'
 param adminPassword string = 'FortiAzure123!'
 
 @description('Naming prefix for all deployed resources.')
-param deploymentPrefix string 'XPA'
+param deploymentPrefix string = 'XPA'
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                                                 //
