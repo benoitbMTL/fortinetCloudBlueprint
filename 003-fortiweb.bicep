@@ -59,32 +59,32 @@ var availabilitySetId = {
 var var_vnetName = ((vnetName == '') ? '${deploymentPrefix}-VNET' : vnetName)
 var subnet5Id = ((vnetNewOrExisting == 'new') ? resourceId('Microsoft.Network/virtualNetworks/subnets', var_vnetName, subnet5Name) : resourceId(vnetResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', var_vnetName, subnet5Name))
 var subnet6Id = ((vnetNewOrExisting == 'new') ? resourceId('Microsoft.Network/virtualNetworks/subnets', var_vnetName, subnet6Name) : resourceId(vnetResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', var_vnetName, subnet6Name))
-var fwbGlobalDataBody = 'config system settings\n set enable-file-upload enable\n end\n config system admin\n edit admin\n set password abcdefghi123456789\n end\n'
+var fwbGlobalDataBody = 'config system settings\n set enable-file-upload enable\n end\n config system admin\n edit admin\n set password Q1w2e34567890\n end\n'
 var fwbACustomDataBodyHA = 'config system ha\n set mode active-active-high-volume\n set group-id ${fortiWebHaGroupId}\n set group-name ${toLower(deploymentPrefix)}\n set priority 1\n set tunnel-local ${sn2IPfwbA}\n set tunnel-peer ${sn2IPfwbB}\n set monitor port1 port2\n set override enable\n end\n'
-var fwbACustomDataBody = '${fwbGlobalDataBody}${fwbACustomDataBodyHA}${fwbACustomDataPreconfig}${fortiWebAAdditionalCustomData}'
+var fwbACustomDataBody = '${fwbGlobalDataBody}${fwbACustomDataBodyHA}${fwbACustomDataPreconfig}${fortiWebAAdditionalCustomData}\n'
 var fwbACustomDataCombined = { 
   'cloud-initd' : 'enable'
   'usr-cli': fwbACustomDataBody
   }
-var fwbACustomDataPreconfig = '${fwbCustomDataVIP}${fwbStaticRoute}${fwbServerPool}${configFortiGateIntegrationA}${letsEncrypt}${wvsProfile}${bulkPoCConfig}'
-var fwbCustomDataVIP = '\n config system vip\n edit "DVWA_VIP"\n set vip ${reference(publicIPId).ipAddress}/32\n set interface port1\n next\n end\n'
-var fwbStaticRoute = '\n config router static\n edit 1\n set dst ${vnetAddressPrefix}\n set gateway ${sn2GatewayIP}\n set device port2\n next\n end\n'
-var fwbServerPool = '\n config server-policy server-pool\n edit "DVWA_POOL"\n config pserver-list\n edit 1\n set ip ${subnet7StartAddress}\n next\n end\n next\n end\n'
-var configFortiGateIntegrationA = '\n config system fortigate-integration\n set address ${subnet4StartAddress}\n set port 443\nset protocol HTTPS\n set username ${adminUsername}\n set password ${adminPassword}\nset flag enable\n end\n'
-var letsEncrypt = '\n config system certificate letsencrypt\n edit "DVWA_LE_CERTIFICATE"\n set domain ${deploymentPrefix}.${location}.cloudapp.azure.com\n set validation-method TLS-ALPN\n next\n end\n'
-var wvsProfile = '\n config wvs profile\n edit "DVWASCANPROFILE"\n set scan-target https://${sn1IPfwbA}\n set scan-template "OWASP Top 10"\n set custom-header0 "Cookie: security=low; PHPSESSID=XXXXXXXXXXXXXXXXXXXX"\n set form-based-authentication enable\n set form-based-username pablo\n set form-based-password letmein\n set form-based-auth-url https://${sn1IPfwbA}/login.php\n set username-field username\n set password-field password\n set session-check-url https://10.0.5.5/index.php\n set session-check-string Welcome\n set data-format %u=%U&%p=%P\n next\n end\n'
+var fwbACustomDataPreconfig = '${fwbCustomDataVIP}${fwbStaticRoute}${fwbServerPool}${configFortiGateIntegrationA}${letsEncrypt}${wvsProfile}${bulkPoCConfig}\n'
+var fwbCustomDataVIP = 'config system vip\n edit "DVWA_VIP"\n set vip ${reference(publicIPId).ipAddress}/32\n set interface port1\n next\n end\n'
+var fwbStaticRoute = 'config router static\n edit 1\n set dst ${vnetAddressPrefix}\n set gateway ${sn2GatewayIP}\n set device port2\n next\n end\n'
+var fwbServerPool = 'config server-policy server-pool\n edit "DVWA_POOL"\n config pserver-list\n edit 1\n set ip ${subnet7StartAddress}\n next\n end\n next\n end\n'
+var configFortiGateIntegrationA = 'config system fortigate-integration\n set server ${subnet4StartAddress}\n set port 443\n set protocol HTTPS\n set username ${adminUsername}\n set password ${adminPassword}\n set flag enable\n end\n'
+var letsEncrypt = 'config system certificate letsencrypt\n edit "DVWA_LE_CERTIFICATE"\n set domain ${deploymentPrefix}.${location}.cloudapp.azure.com\n set validation-method TLS-ALPN\n next\n end\n'
+var wvsProfile = 'config wvs profile\n edit "DVWASCANPROFILE"\n set scan-target https://${sn1IPfwbA}\n set scan-template "OWASP Top 10"\n set custom-header0 "Cookie: security=low; PHPSESSID=XXXXXXXXXXXXXXXXXXXX"\n set form-based-authentication enable\n set form-based-username pablo\n set form-based-password letmein\n set form-based-auth-url https://${sn1IPfwbA}/login.php\n set username-field username\n set password-field password\n set session-check-url https://10.0.5.5/index.php\n set session-check-string Welcome\n set data-format %u=%U&%p=%P\n next\n end\n'
 var bulkPoCConfig = loadTextContent('005-fortiwebCustomData.txt')
 
 var fwbACustomData = base64(string(fwbACustomDataCombined))
-var fwbBCustomDataBodyHA = 'config system ha\n set override enable\n set mode active-active-high-volume\n set group-id ${fortiWebHaGroupId}\n set group-name ${toLower(deploymentPrefix)}\n set priority 2\n set tunnel-local ${sn2IPfwbB}\n set tunnel-peer ${sn2IPfwbA}\n set monitor port1 port2\n end\n'
-var fwbBCustomDataBody = '${fwbGlobalDataBody}${fwbBCustomDataBodyHA}${fwbBCustomDataPreconfig}${fortiWebBAdditionalCustomData}'
-var fwbBCustomDataPreconfig = '${fwbCustomDataVIP}${fwbStaticRoute}${fwbServerPool}${configFortiGateIntegrationB}${letsEncrypt}${bulkPoCConfig}'
+var fwbBCustomDataBodyHA = 'config system ha\n set mode active-active-high-volume\n set group-id ${fortiWebHaGroupId}\n set group-name ${toLower(deploymentPrefix)}\n set priority 2\n set tunnel-local ${sn2IPfwbB}\n set tunnel-peer ${sn2IPfwbA}\n set monitor port1 port2\n set override enable\n end\n'
+var fwbBCustomDataBody = '${fwbGlobalDataBody}${fwbBCustomDataBodyHA}${fwbBCustomDataPreconfig}${fortiWebBAdditionalCustomData}\n'
+var fwbBCustomDataPreconfig = '${fwbCustomDataVIP}${fwbStaticRoute}${fwbServerPool}${configFortiGateIntegrationB}${letsEncrypt}${bulkPoCConfig}\n'
 var fwbbCustomDataCombined = { 
   'cloud-initd': 'enable'
   'usr-cli': fwbBCustomDataBody
 }
 var fwbBCustomData = base64(string(fwbbCustomDataCombined))
-var configFortiGateIntegrationB = '\n config system fortigate-integration\n set server ${subnet4StartAddress}\n set port 443\n set protocol HTTPS\n set username ${adminUsername}\n set password ${adminPassword}\n set flag enable\n end\n'
+var configFortiGateIntegrationB = 'config system fortigate-integration\n set server ${subnet4StartAddress}\n set port 443\n set protocol HTTPS\n set username ${adminUsername}\n set password ${adminPassword}\n set flag enable\n end\n'
 var var_fwbAVmName = '${deploymentPrefix}-FWB-A'
 var var_fwbBVmName = '${deploymentPrefix}-FWB-B'
 var var_fwbANic1Name = '${var_fwbAVmName}-Nic1'
@@ -145,9 +145,9 @@ var externalLBId_NatRule_FWBAdminPerm_fwbB = resourceId('Microsoft.Network/loadB
 var externalLBName_NatRule_SSH_fwbB = '${var_fwbBVmName}SSH'
 var externalLBId_NatRule_SSH_fwbB = resourceId('Microsoft.Network/loadBalancers/inboundNatRules', var_externalLBName, externalLBName_NatRule_SSH_fwbB)
 var var_externalLBName = '${deploymentPrefix}-FWB-ELB'
-var externalLBFEName = '${deploymentPrefix}-LB-${subnet5Name}-Frontend\n'
+var externalLBFEName = '${deploymentPrefix}-LB-${subnet5Name}-FrontEnd'
 var externalLBFEId = resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations/', var_externalLBName, externalLBFEName)
-var externalLBBEName = '${deploymentPrefix}-LB-${subnet5Name}-Backend\n'
+var externalLBBEName = '${deploymentPrefix}-LB-${subnet5Name}-BackEnd'
 var externalLBBEId = resourceId('Microsoft.Network/loadBalancers/backendAddressPools/', var_externalLBName, externalLBBEName)
 var externalLBProbeName = 'heatlhProbeHttp'
 var externalLBProbeId = resourceId('Microsoft.Network/loadBalancers/probes/', var_externalLBName, externalLBProbeName)
@@ -155,9 +155,9 @@ var externalLBProbe2Name = 'heatlhProbeHttps'
 var externalLBProbe2Id = resourceId('Microsoft.Network/loadBalancers/probes/', var_externalLBName, externalLBProbe2Name)
 var useAZ = ((!empty(pickZones('Microsoft.Compute', 'virtualMachines', location))) && (availabilityOptions == 'Availability Zones'))
 var var_internalLBName = '${deploymentPrefix}-FWB-ILB'
-var internalLBFEName = '${deploymentPrefix}-ILB-${subnet5Name}-Frontend\n'
+var internalLBFEName = '${deploymentPrefix}-ILB-${subnet5Name}-FrontEnd'
 var internalLBFEId = resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', var_internalLBName, internalLBFEName)
-var internalLBBEName = '${deploymentPrefix}-ILB-${subnet5Name}-Backend\n'
+var internalLBBEName = '${deploymentPrefix}-ILB-${subnet5Name}-BackEnd'
 var internalLBBEId = resourceId('Microsoft.Network/loadBalancers/backendAddressPools', var_internalLBName, internalLBBEName)
 var internalLBProbeName = 'lbprobe'
 var internalLBProbeId = resourceId('Microsoft.Network/loadBalancers/probes', var_internalLBName, internalLBProbeName)
@@ -813,7 +813,3 @@ output fortiWebPublicIP string = ((publicIPNewOrExistingOrNone == 'new') ? refer
 output fwbACustomData string = fwbACustomData
 output fwbBCustomData string = fwbBCustomData
 output fwbACustomDataPreconfig string = fwbACustomDataPreconfig
-
-
-
-
